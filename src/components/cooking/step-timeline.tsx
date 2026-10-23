@@ -1,5 +1,3 @@
-"use client";
-
 import { Check, Lightbulb, Soup, Timer } from "lucide-react";
 import type { Ref } from "react";
 

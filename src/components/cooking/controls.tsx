@@ -1,5 +1,3 @@
-"use client";
-
 import { Minus, Plus, Sun } from "lucide-react";
 
 import type { WakeLockStatus } from "@/lib/cooking/use-wake-lock";

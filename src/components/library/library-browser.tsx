@@ -1,10 +1,7 @@
-"use client";
-
 import { Search, X } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useDeferredValue, useEffect, useMemo, useState } from "react";
+import { useDeferredValue, useMemo, useState } from "react";
 
-import { useHydrated, useNow } from "@/lib/cooking/hooks";
+import { useNow } from "@/lib/cooking/hooks";
 import { timerStatus, useCookingStore } from "@/lib/cooking/store";
 import { normalize } from "@/lib/recipes/text";
 import type { RecipeSummary } from "@/lib/recipes/types";
@@ -38,19 +35,9 @@ function haystack(recipe: RecipeSummary): string {
 
 /** Search, filters and the « En cours » shortcuts of the recipe library. */
 export function LibraryBrowser({ recipes }: LibraryBrowserProps) {
-  const router = useRouter();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<string | null>(null);
   const deferredQuery = useDeferredValue(query);
-
-  // Pick up recipes added to the folder while the app was in the background.
-  useEffect(() => {
-    const refresh = () => {
-      if (document.visibilityState === "visible") router.refresh();
-    };
-    document.addEventListener("visibilitychange", refresh);
-    return () => document.removeEventListener("visibilitychange", refresh);
-  }, [router]);
 
   const indexed = useMemo(
     () => recipes.map((recipe) => ({ recipe, text: haystack(recipe) })),
@@ -91,18 +78,15 @@ export function LibraryBrowser({ recipes }: LibraryBrowserProps) {
     })
     .map(({ recipe }) => recipe);
 
-  const hydrated = useHydrated();
   const sessions = useCookingStore((state) => state.sessions);
-  const inProgress = hydrated
-    ? recipes.filter((recipe) => {
-        const session = sessions[recipe.slug];
-        return (
-          session &&
-          session.currentStep < recipe.stepCount &&
-          (session.currentStep > 0 || session.timers.length > 0)
-        );
-      })
-    : [];
+  const inProgress = recipes.filter((recipe) => {
+    const session = sessions[recipe.slug];
+    return (
+      session &&
+      session.currentStep < recipe.stepCount &&
+      (session.currentStep > 0 || session.timers.length > 0)
+    );
+  });
   const now = useNow(
     inProgress.some(
       (recipe) => (sessions[recipe.slug]?.timers.length ?? 0) > 0,

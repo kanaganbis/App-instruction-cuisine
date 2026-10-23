@@ -1,13 +1,10 @@
-"use client";
-
 import { ChevronLeft } from "lucide-react";
-import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, type ReactNode } from "react";
 
 import { formatClock, formatDuration } from "@/lib/recipes/duration";
 import { stepLabel } from "@/lib/recipes/inline";
 import type { Recipe } from "@/lib/recipes/types";
-import { useHydrated, useNow, useSession } from "@/lib/cooking/hooks";
+import { useNow, useSession } from "@/lib/cooking/hooks";
 import { requestNotifications, unlockAudio } from "@/lib/cooking/sound";
 import {
   timerStatus,
@@ -15,6 +12,7 @@ import {
   type TimerState,
 } from "@/lib/cooking/store";
 import { useWakeLock } from "@/lib/cooking/use-wake-lock";
+import { href } from "@/lib/router";
 
 import { ServingsStepper, WakeLockToggle } from "./controls";
 import { PrepChecklist } from "./prep-checklist";
@@ -23,7 +21,7 @@ import { TimerDock } from "./timer-dock";
 
 interface CookingViewProps {
   recipe: Recipe;
-  /** Extra sections of the recipe (« Conseils »…), rendered on the server. */
+  /** Extra sections of the recipe (« Conseils »…). */
   notes?: ReactNode;
 }
 
@@ -32,11 +30,10 @@ const timerId = (stepIndex: number, seconds: number) =>
 
 export function CookingView({ recipe, notes }: CookingViewProps) {
   const { slug, steps } = recipe;
-  const hydrated = useHydrated();
   const session = useSession(slug);
   const keepAwake = useCookingStore((state) => state.keepAwake);
   const store = useCookingStore.getState;
-  const wakeLock = useWakeLock(hydrated && keepAwake);
+  const wakeLock = useWakeLock(keepAwake);
 
   const ingredients = useMemo(
     () =>
@@ -53,7 +50,7 @@ export function CookingView({ recipe, notes }: CookingViewProps) {
   const finished = current >= steps.length;
 
   const timers = session.timers;
-  const now = useNow(hydrated && timers.length > 0);
+  const now = useNow(timers.length > 0);
 
   const timerView = useCallback(
     (stepIndex: number, seconds: number): StepTimerView => {
@@ -93,13 +90,12 @@ export function CookingView({ recipe, notes }: CookingViewProps) {
   const currentRef = useRef<HTMLElement>(null);
   const lastStep = useRef<number | null>(null);
   useEffect(() => {
-    if (!hydrated) return;
     const previous = lastStep.current;
     lastStep.current = current;
     if (previous === null && current === 0) return;
     if (previous === current) return;
     currentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [hydrated, current]);
+  }, [current]);
 
   // ← / → move between steps on a keyboard.
   useEffect(() => {
@@ -153,33 +149,27 @@ export function CookingView({ recipe, notes }: CookingViewProps) {
   return (
     <div className="mx-auto w-full max-w-6xl px-5 pt-4 pb-44 lg:px-8">
       <div className="flex items-center justify-between gap-3">
-        <Link
-          href="/"
+        <a
+          href={href.library}
           aria-label="Retour aux recettes"
           className="flex size-11 items-center justify-center rounded-full border border-line bg-surface hover:bg-inset"
         >
           <ChevronLeft aria-hidden className="size-5" strokeWidth={2.2} />
-        </Link>
-        {hydrated && (
-          <WakeLockToggle
-            wanted={keepAwake}
-            status={wakeLock.status}
-            onToggle={() => {
-              const next = !keepAwake;
-              store().setKeepAwake(next);
-              if (next) wakeLock.activate();
-            }}
-          />
-        )}
+        </a>
+        <WakeLockToggle
+          wanted={keepAwake}
+          status={wakeLock.status}
+          onToggle={() => {
+            const next = !keepAwake;
+            store().setKeepAwake(next);
+            if (next) wakeLock.activate();
+          }}
+        />
       </div>
 
       <div className="mt-4 lg:grid lg:grid-cols-[21rem_minmax(0,1fr)] lg:items-start lg:gap-10">
         <aside className="hidden lg:sticky lg:top-6 lg:block lg:max-h-[calc(100dvh-3rem)] lg:overflow-y-auto lg:rounded-[20px]">
-          {hydrated ? (
-            checklist(false)
-          ) : (
-            <div className="h-96 animate-pulse rounded-[20px] bg-surface" />
-          )}
+          {checklist(false)}
         </aside>
 
         <main className="mx-auto w-full max-w-2xl lg:mx-0">
@@ -211,20 +201,13 @@ export function CookingView({ recipe, notes }: CookingViewProps) {
                 </div>
               ))}
               <div className={times.length ? "flex-[1.5]" : "flex-1"}>
-                {hydrated ? (
-                  <ServingsStepper
-                    value={servings}
-                    unit={baseServings ? "portions" : "fois"}
-                    onChange={(value) =>
-                      store().setServings(
-                        slug,
-                        Math.min(24, Math.max(1, value)),
-                      )
-                    }
-                  />
-                ) : (
-                  <div className="h-14 animate-pulse rounded-2xl bg-surface" />
-                )}
+                <ServingsStepper
+                  value={servings}
+                  unit={baseServings ? "portions" : "fois"}
+                  onChange={(value) =>
+                    store().setServings(slug, Math.min(24, Math.max(1, value)))
+                  }
+                />
               </div>
             </div>
 
@@ -232,15 +215,12 @@ export function CookingView({ recipe, notes }: CookingViewProps) {
               <div className="flex flex-col gap-2" aria-live="polite">
                 <div className="flex justify-between text-sm font-bold">
                   <span>
-                    {!hydrated
-                      ? " "
-                      : finished
-                        ? "Recette terminée"
-                        : `Étape ${current + 1} sur ${steps.length}`}
+                    {finished
+                      ? "Recette terminée"
+                      : `Étape ${current + 1} sur ${steps.length}`}
                   </span>
                   <span className="font-semibold text-muted">
-                    {hydrated &&
-                      !finished &&
+                    {!finished &&
                       (ahead === 0 ? "Dernière étape" : `${ahead} à venir`)}
                   </span>
                 </div>
@@ -250,12 +230,12 @@ export function CookingView({ recipe, notes }: CookingViewProps) {
                   aria-label="Avancement de la recette"
                   aria-valuemin={0}
                   aria-valuemax={steps.length}
-                  aria-valuenow={hydrated ? current : 0}
+                  aria-valuenow={current}
                 >
                   <div
                     className="h-full rounded-full bg-accent transition-[width] duration-500"
                     style={{
-                      width: `${hydrated ? (current / steps.length) * 100 : 0}%`,
+                      width: `${(current / steps.length) * 100}%`,
                     }}
                   />
                 </div>
@@ -263,54 +243,39 @@ export function CookingView({ recipe, notes }: CookingViewProps) {
             )}
           </header>
 
-          <div className="mt-[18px] lg:hidden">
-            {hydrated ? (
-              checklist(true)
-            ) : (
-              <div className="h-16 animate-pulse rounded-[20px] bg-surface" />
-            )}
-          </div>
+          <div className="mt-[18px] lg:hidden">{checklist(true)}</div>
 
-          {hydrated ? (
-            steps.length > 0 && (
-              <StepTimeline
-                steps={steps}
-                ingredients={ingredients}
-                factor={factor}
-                current={current}
-                timer={timerView}
-                onToggleTimer={toggleTimer}
-                onGo={goTo}
-                onComplete={(index) => goTo(index + 1)}
-                onRestart={() => store().resetSession(slug)}
-                currentRef={currentRef}
-              />
-            )
-          ) : (
-            <div className="mt-6 flex flex-col gap-4" aria-hidden>
-              <div className="h-64 animate-pulse rounded-[22px] bg-surface" />
-              <div className="h-24 animate-pulse rounded-[22px] bg-surface/60" />
-            </div>
+          {steps.length > 0 && (
+            <StepTimeline
+              steps={steps}
+              ingredients={ingredients}
+              factor={factor}
+              current={current}
+              timer={timerView}
+              onToggleTimer={toggleTimer}
+              onGo={goTo}
+              onComplete={(index) => goTo(index + 1)}
+              onRestart={() => store().resetSession(slug)}
+              currentRef={currentRef}
+            />
           )}
 
           {notes}
         </main>
       </div>
 
-      {hydrated && (
-        <TimerDock
-          timers={timers}
-          now={now}
-          onToggle={(timer: TimerState) => {
-            unlockAudio();
-            store().toggleTimer(slug, {
-              ...timer,
-              seconds: timer.durationMs / 1000,
-            });
-          }}
-          onRemove={(timer) => store().removeTimer(slug, timer.id)}
-        />
-      )}
+      <TimerDock
+        timers={timers}
+        now={now}
+        onToggle={(timer: TimerState) => {
+          unlockAudio();
+          store().toggleTimer(slug, {
+            ...timer,
+            seconds: timer.durationMs / 1000,
+          });
+        }}
+        onRemove={(timer) => store().removeTimer(slug, timer.id)}
+      />
     </div>
   );
 }

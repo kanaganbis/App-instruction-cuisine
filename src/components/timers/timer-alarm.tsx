@@ -1,28 +1,21 @@
-"use client";
-
 import { BellRing } from "lucide-react";
-import Link from "next/link";
 import { useEffect, useMemo, useRef } from "react";
 
 import { formatClock } from "@/lib/recipes/duration";
-import { useHydrated, useNow } from "@/lib/cooking/hooks";
+import { useNow } from "@/lib/cooking/hooks";
 import { notify, playChime, vibrate } from "@/lib/cooking/sound";
 import { timerStatus, useCookingStore } from "@/lib/cooking/store";
+import { href } from "@/lib/router";
 
 const RING_EVERY_MS = 2500;
 const RING_FOR_MS = 3 * 60 * 1000;
 
-/**
- * Loads saved progress, then watches every timer of every recipe and rings
- * when one finishes — on any page of the app.
- */
+/** Watches every timer of every recipe and rings when one finishes, on any page. */
 export function TimerAlarm() {
-  const hydrated = useHydrated();
   const sessions = useCookingStore((state) => state.sessions);
   const acknowledge = useCookingStore((state) => state.acknowledge);
 
   useEffect(() => {
-    void useCookingStore.persist.rehydrate();
     // Keep several tabs in sync.
     const onStorage = (event: StorageEvent) => {
       if (event.key === useCookingStore.persist.getOptions().name) {
@@ -42,7 +35,7 @@ export function TimerAlarm() {
       ),
     [sessions],
   );
-  const now = useNow(hydrated && pending.length > 0);
+  const now = useNow(pending.length > 0);
 
   const ringing = pending.filter(
     ({ timer }) => timerStatus(timer, now).status === "done",
@@ -111,12 +104,12 @@ export function TimerAlarm() {
           <ul className="text-sm text-dock-muted">
             {ringing.map(({ slug, timer }) => (
               <li key={`${slug}/${timer.id}`} className="truncate">
-                <Link
-                  href={`/recettes/${slug}`}
+                <a
+                  href={href.recipe(slug)}
                   className="underline-offset-2 hover:underline"
                 >
                   {timer.label}
-                </Link>{" "}
+                </a>{" "}
                 · {formatClock(timer.durationMs / 1000)}
               </li>
             ))}

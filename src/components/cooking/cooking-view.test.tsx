@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
-import { act, render, screen, within } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 
@@ -21,7 +21,6 @@ const recipe = parseRecipe(
 async function renderView() {
   const user = userEvent.setup();
   render(<CookingView recipe={recipe} />);
-  await act(() => useCookingStore.persist.rehydrate());
   return user;
 }
 

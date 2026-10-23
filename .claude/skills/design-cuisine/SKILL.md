@@ -9,7 +9,7 @@ L'application sert pendant qu'on cuisine : mains occupées, téléphone posé à
 lumière variable. Chaque choix vise à lire vite et à toucher juste. Garde cette
 intention en tête plutôt que d'appliquer les règles mécaniquement.
 
-## Jetons (src/app/globals.css)
+## Jetons (src/styles.css)
 
 Les couleurs sont des variables CSS sémantiques exposées à Tailwind
 (`bg-ground`, `text-muted`, `bg-accent`…). Le mode sombre redéfinit les mêmes
@@ -37,8 +37,8 @@ Règle de sens : **vert = ingrédients et avancement, safran = temps**. Ne méla
 - `font-sans` (Figtree) : tout le reste. Instruction de l'étape en cours en
   `text-lg leading-[1.62]` : c'est le texte qu'on lit de loin, ne le réduis pas.
 - Chiffres alignés : `tabular-nums` sur les quantités et les minuteurs.
-- Les polices sont servies localement (`next/font/local` + paquets `@fontsource`) :
-  l'application doit fonctionner sans internet.
+- Les polices sont des fichiers locaux (`@font-face` dans `src/styles.css`, paquets
+  `@fontsource`) intégrés au fichier HTML : l'application doit fonctionner sans internet.
 
 ## Composants (src/components)
 
@@ -64,8 +64,9 @@ sections, `rounded-[22px]` cartes principales) avant d'en créer de nouveaux.
 - Contraste ≥ 4,5:1 dans les deux thèmes ; vérifie aussi en mode sombre.
 - Icônes : `lucide-react`, trait cohérent, jamais d'emoji dans l'interface.
 - Animations sobres et respectant `prefers-reduced-motion` (déjà géré globalement).
-- L'état de cuisine vient du navigateur après le premier rendu : tout ce qui en dépend
-  passe par `useHydrated()` et affiche un squelette avant, pour éviter les sauts.
+- Les recettes arrivent du cache puis de Google Drive : prévois un état de chargement
+  (squelette), un état vide et un message d'erreur actionnable pour chaque écran.
+- Les liens internes passent par `href.library` / `href.recipe(slug)` (routes `#/…`).
 
 ## Mise en page
 
@@ -76,7 +77,7 @@ sections, `rounded-[22px]` cartes principales) avant d'en créer de nouveaux.
 
 ## Vérifier visuellement
 
-Après une modification visuelle : `npm run build && npx next start -p 3200`, puis
-captures Playwright en `Pixel 7` et en bureau 1366×900, thème clair **et** sombre
+Après une modification visuelle : `npm run dev` (recettes du dossier local `recettes/`),
+puis captures Playwright en `Pixel 7` et en bureau 1366×900, thème clair **et** sombre
 (`colorScheme: "dark"`). Regarde-les avant de conclure : débordements horizontaux,
 textes coupés, contraste, alignement des quantités.

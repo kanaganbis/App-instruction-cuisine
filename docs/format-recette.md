@@ -125,10 +125,15 @@ s'affiche sous l'étape avec une ampoule.
 Toute autre section (`## Conseils`, `## Conservation`, `## Valeurs nutritionnelles`…)
 s'affiche telle quelle à la fin de la recette (listes, gras, tableaux compris).
 
-## Organisation du dossier
+## Organisation du dossier Google Drive
 
+- Les recettes sont des fichiers `.md` déposés dans le dossier Drive partagé par lien
+  (« Tous les utilisateurs disposant du lien »). Un Google Doc est aussi lu (converti en
+  Markdown par Google), mais un fichier `.md` est plus fiable.
 - Les sous-dossiers sont parcourus ; le nom du sous-dossier sert de catégorie si la
   recette n'en précise pas.
+- Une photo (`image: photos/curry.jpg`) peut être rangée dans le même dossier Drive,
+  à côté du fichier ou dans un sous-dossier.
 - Les fichiers et dossiers commençant par `.` ou `_`, ainsi que `README.md`, sont ignorés.
 - L'adresse d'une recette vient du chemin du fichier : renommer un fichier remet sa
   progression à zéro.

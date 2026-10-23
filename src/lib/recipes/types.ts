@@ -106,6 +106,5 @@ export interface RecipeSummary {
   imageUrl: string | null;
   ingredientNames: string[];
   stepCount: number;
-  updatedAt: number;
   warningCount: number;
 }

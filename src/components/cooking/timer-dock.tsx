@@ -1,5 +1,3 @@
-"use client";
-
 import { Pause, Play, Timer, X } from "lucide-react";
 
 import { formatClock } from "@/lib/recipes/duration";

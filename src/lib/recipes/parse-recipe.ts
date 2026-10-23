@@ -176,7 +176,7 @@ function splitFrontMatter(
   source: string,
   warnings: string[],
 ): { data: Record<string, unknown>; body: string } {
-  const text = source.replace(/^﻿/, "").replace(/\r\n?/g, "\n");
+  const text = source.replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n");
   const match = /^---\n([\s\S]*?)\n---[ \t]*(?:\n|$)/.exec(text);
   if (!match) return { data: {}, body: text };
   const body = text.slice(match[0].length);

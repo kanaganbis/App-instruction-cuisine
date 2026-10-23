@@ -1,20 +1,6 @@
-"use client";
-
 import { useSyncExternalStore } from "react";
 
 import { emptySession, useCookingStore, type CookingSession } from "./store";
-
-const subscribeHydration = (onChange: () => void) =>
-  useCookingStore.persist.onFinishHydration(onChange);
-
-/** `true` once saved progress has been read from the browser. */
-export function useHydrated(): boolean {
-  return useSyncExternalStore(
-    subscribeHydration,
-    () => useCookingStore.persist.hasHydrated(),
-    () => false,
-  );
-}
 
 const EMPTY = emptySession();
 

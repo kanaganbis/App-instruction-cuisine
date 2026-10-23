@@ -5,8 +5,8 @@ description: Écrit, convertit ou corrige une recette de cuisine au format Markd
 
 # Recette au format Markdown
 
-L'application lit des fichiers `.md` dans le dossier des recettes (`./recettes` ou
-`RECETTES_DIR`) et affiche, pour chaque étape, le texte avec les quantités intégrées,
+L'application lit des fichiers `.md` dans un dossier Google Drive partagé par lien (en
+développement : le dossier local `recettes/`) et affiche, pour chaque étape, le texte avec les quantités intégrées,
 les ingrédients de l'étape et des minuteurs. Ce skill sert à produire des fichiers que
 l'application comprend entièrement.
 
@@ -82,10 +82,14 @@ Chauffez {huile d'olive} dans une sauteuse. Faites revenir {oignon} 3 min, puis 
   l'instruction.
 - **Tout le reste dans des sections `##` après les étapes** (équilibre nutritionnel,
   conservation, variantes) : elles sont affichées telles quelles en fin de recette.
-- **Nom de fichier** en minuscules avec tirets (`curry-pois-chiches.md`) ; un
-  sous-dossier peut servir de catégorie (`desserts/tarte-pommes.md`). Le chemin sert
-  d'adresse et de clé de sauvegarde de la progression : évite de renommer un fichier
-  pendant qu'une recette est en cours.
+- **Nom de fichier** en minuscules avec tirets (`curry-pois-chiches.md`), extension
+  `.md` : un fichier sans cette extension est ignoré. Un sous-dossier du dossier Drive
+  sert de catégorie (`desserts/tarte-pommes.md`). Le chemin sert d'adresse et de clé de
+  sauvegarde de la progression : évite de renommer un fichier pendant qu'une recette
+  est en cours.
+- **Enregistrement** : dépose le fichier dans le dossier Google Drive des recettes. Si
+  un connecteur Google Drive est disponible, crée le fichier directement dans ce
+  dossier, en texte brut (type `text/markdown`), sans le convertir en Google Doc.
 
 ## Convertir une recette existante
 

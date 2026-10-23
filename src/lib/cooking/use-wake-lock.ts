@@ -1,5 +1,3 @@
-"use client";
-
 import type NoSleep from "nosleep.js";
 import { useEffect, useSyncExternalStore } from "react";
 

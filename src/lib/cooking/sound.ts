@@ -49,15 +49,29 @@ export function requestNotifications(): void {
     void Notification.requestPermission().catch(() => {});
 }
 
+/**
+ * Shows a system notification. Phones (Android Chrome, installed iPhone apps)
+ * only allow them through the service worker.
+ */
 export function notify(title: string, body: string, tag: string): void {
   if (
     typeof Notification === "undefined" ||
     Notification.permission !== "granted"
   )
     return;
-  try {
-    new Notification(title, { body, tag });
-  } catch {
-    // Some mobile browsers only allow notifications from a service worker.
-  }
+  const options = { body, tag, icon: "./icon-192.png" };
+  const fallback = () => {
+    try {
+      new Notification(title, options);
+    } catch {
+      // Not allowed outside a service worker: the sound and banner remain.
+    }
+  };
+  const registration = navigator.serviceWorker?.getRegistration();
+  if (!registration) return fallback();
+  registration
+    .then((worker) =>
+      worker ? worker.showNotification(title, options) : fallback(),
+    )
+    .catch(fallback);
 }

@@ -1,16 +1,15 @@
 import { ArrowRight, Clock, ListChecks, Timer, Users } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
 
 import { formatDuration } from "@/lib/recipes/duration";
+import { href } from "@/lib/router";
 import type { RecipeSummary } from "@/lib/recipes/types";
 import { cn } from "@/lib/utils";
 
 export function RecipeCard({ recipe }: { recipe: RecipeSummary }) {
   const { meta } = recipe;
   return (
-    <Link
-      href={`/recettes/${recipe.slug}`}
+    <a
+      href={href.recipe(recipe.slug)}
       className="group flex w-full flex-col overflow-hidden rounded-[22px] bg-surface shadow-card transition-transform duration-200 hover:-translate-y-0.5 focus-visible:-translate-y-0.5"
     >
       <div
@@ -20,13 +19,12 @@ export function RecipeCard({ recipe }: { recipe: RecipeSummary }) {
         )}
       >
         {recipe.imageUrl ? (
-          <Image
+          <img
             src={recipe.imageUrl}
             alt=""
-            fill
-            unoptimized
-            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            loading="lazy"
+            decoding="async"
+            className="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           />
         ) : (
           <span
@@ -84,7 +82,7 @@ export function RecipeCard({ recipe }: { recipe: RecipeSummary }) {
           </ul>
         )}
       </div>
-    </Link>
+    </a>
   );
 }
 
@@ -98,8 +96,8 @@ interface ResumeCardProps {
 export function ResumeCard({ recipe, step, runningTimers }: ResumeCardProps) {
   const progress = recipe.stepCount ? (step / recipe.stepCount) * 100 : 0;
   return (
-    <Link
-      href={`/recettes/${recipe.slug}`}
+    <a
+      href={href.recipe(recipe.slug)}
       className="flex items-center gap-4 rounded-[20px] bg-surface p-4 shadow-card transition-colors hover:bg-inset"
     >
       <div className="flex min-w-0 flex-1 flex-col gap-2">
@@ -129,6 +127,6 @@ export function ResumeCard({ recipe, step, runningTimers }: ResumeCardProps) {
         <ArrowRight aria-hidden className="size-5" />
         <span className="sr-only">Reprendre</span>
       </span>
-    </Link>
+    </a>
   );
 }

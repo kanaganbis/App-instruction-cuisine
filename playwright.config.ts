@@ -9,9 +9,12 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? "github" : "list",
   use: {
-    baseURL: `http://localhost:${PORT}`,
+    baseURL: `http://localhost:${PORT}/`,
     trace: "retain-on-failure",
     locale: "fr-FR",
+    // The tests answer the Google Drive calls themselves (e2e/drive-mock.ts);
+    // a service worker would hide those calls from them.
+    serviceWorkers: "block",
     launchOptions: {
       // Lets the suite run against a preinstalled Chromium when the matching
       // Playwright build is not downloaded (`npx playwright install chromium`).
@@ -23,10 +26,14 @@ export default defineConfig({
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },
   ],
   webServer: {
-    command: `npm run build && npx next start -p ${PORT}`,
-    url: `http://localhost:${PORT}`,
+    // The real single-file build, pointed at a fake Drive folder.
+    command: `npm run build && npx vite preview --port ${PORT} --strictPort`,
+    url: `http://localhost:${PORT}/`,
     reuseExistingServer: !process.env.CI,
     timeout: 240_000,
-    env: { RECETTES_DIR: "./e2e/recettes" },
+    env: {
+      VITE_GOOGLE_API_KEY: "cle-e2e",
+      VITE_DRIVE_FOLDER: "https://drive.google.com/drive/folders/dossier-e2e",
+    },
   },
 });

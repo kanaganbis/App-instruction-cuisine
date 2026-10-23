@@ -195,9 +195,6 @@ export const useCookingStore = create<CookingState>()(
       name: "cuisine-pas-a-pas",
       version: 1,
       storage: createJSONStorage(() => localStorage),
-      // Rehydrated by <TimerAlarm /> after the first render, to match the
-      // server-rendered HTML.
-      skipHydration: true,
       partialize: ({ sessions, keepAwake }) => ({ sessions, keepAwake }),
       merge: (persisted, current) => {
         const saved = (persisted ?? {}) as Partial<

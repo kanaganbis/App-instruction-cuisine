@@ -5,8 +5,12 @@ bloc ci-dessous **à la fin des instructions personnalisées du projet** (claude
 Projets → Rééquilibrage des recettes → Instructions). Vos règles de rééquilibrage
 restent inchangées : ce bloc ne décrit que la mise en forme.
 
-Ensuite, enregistrez chaque recette produite dans un fichier `.md` du dossier de
-recettes de l'application (par exemple `curry-pois-chiches.md`).
+Ensuite, enregistrez chaque recette produite dans un fichier `.md` du dossier Google
+Drive des recettes (par exemple `curry-pois-chiches.md`). Elle apparaîtra dans
+l'application à sa prochaine ouverture.
+
+Si le connecteur **Google Drive** est activé dans Claude, ajoutez aussi la dernière règle
+du bloc : Claude enregistrera lui-même la recette dans le dossier.
 
 ---
 
@@ -61,4 +65,7 @@ Règles :
   des minuteurs.
 - Les autres informations (valeurs nutritionnelles, conservation, variantes) vont dans
   des sections « ## » après les étapes.
+- (Si le connecteur Google Drive est disponible) Quand je valide une recette, crée-la
+  dans mon dossier Google Drive « Recettes » sous forme de fichier texte .md (pas de
+  Google Doc), nommé d'après le titre en minuscules avec des tirets.
 ```
