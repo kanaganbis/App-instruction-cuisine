@@ -1,0 +1,10 @@
+dist
+node_modules
+package-lock.json
+playwright-report
+test-results
+coverage
+
+# Recipes are user content: never reformat them
+recettes
+e2e/recettes
