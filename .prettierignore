@@ -1,0 +1,11 @@
+.next
+node_modules
+package-lock.json
+next-env.d.ts
+playwright-report
+test-results
+coverage
+
+# Recipes are user content: never reformat them
+recettes
+e2e/recettes

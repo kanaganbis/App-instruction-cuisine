@@ -47,36 +47,7 @@ Frise des 7 étapes en haut, minuteurs en fond en bas.
   de travail.
 - Compromis : demande une tablette, moins adapté au téléphone.
 
-## Format de recette nécessaire
+## Suite
 
-Pour afficher les quantités dans les phrases et surligner les ingrédients de chaque
-étape, la recette doit être **structurée** : chaque ingrédient a un identifiant et
-chaque étape y fait référence. Le projet Claude « rééquilibrage des recettes » pourrait
-produire directement ce format (JSON), par exemple :
-
-```json
-{
-  "titre": "Curry de pois chiches, patate douce & épinards",
-  "portions": 4,
-  "preparation_min": 15,
-  "cuisson_min": 30,
-  "ingredients": [
-    { "id": "huile", "quantite": 1, "unite": "c. à soupe", "nom": "huile d'olive", "groupe": "Épicerie" },
-    { "id": "oignon", "quantite": 1, "unite": "", "nom": "oignon jaune", "groupe": "Légumes & herbes" }
-  ],
-  "etapes": [
-    {
-      "titre": "Faire revenir",
-      "texte": "Chauffez [huile] dans une sauteuse à feu moyen. Faites revenir l'oignon 3 min…",
-      "ingredients": ["huile", "oignon"],
-      "minuteur_s": 240,
-      "astuce": null
-    }
-  ]
-}
-```
-
-- `[id]` dans le texte est remplacé à l'affichage par la quantité recalculée + le nom.
-- `ingredients` liste tout ce qui sert à l'étape, même ce qui n'est pas cité avec sa
-  quantité dans le texte.
-- `minuteur_s` (facultatif) fait apparaître le bouton minuteur.
+La proposition A a été retenue et développée. Les recettes sont des fichiers
+Markdown : voir [`format-recette.md`](format-recette.md) et le [README](../README.md).
