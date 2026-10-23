@@ -70,8 +70,9 @@ public/                   Manifeste, icônes, service worker (hors ligne, notifi
   `src/lib/recipes/*.test.ts` et une mise à jour de `docs/format-recette.md`.
 - **Sécurité** : le Markdown des notes est rendu sans HTML brut (`skipHtml`) ; seules
   les images `https` ou présentes dans le dossier Drive sont affichées.
-- **Publication** : `.github/workflows/deploy.yml` publie sur GitHub Pages quand les
-  variables de dépôt `DRIVE_FOLDER` et `GOOGLE_API_KEY` existent.
+- **Publication** : `.github/workflows/deploy.yml` publie sur GitHub Pages quand la
+  variable de dépôt `GOOGLE_API_KEY` existe. Le dossier Drive vient de
+  `.env.production` (une variable `DRIVE_FOLDER` peut le remplacer).
 
 ## Skills du projet
 

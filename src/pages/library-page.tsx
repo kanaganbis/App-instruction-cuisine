@@ -185,17 +185,15 @@ function SetupNotice() {
       title="L'application n'est pas encore reliée à Google Drive"
     >
       <p className="text-ink-soft">
-        Elle a besoin de deux réglages au moment de sa construction : le lien du
-        dossier Google Drive des recettes et une clé d&apos;accès Google.
+        Il manque la clé d&apos;accès Google qui permet de lire le dossier des
+        recettes.
       </p>
       <p className="text-sm text-muted">
-        Renseignez <code className="font-mono">DRIVE_FOLDER</code> et{" "}
-        <code className="font-mono">GOOGLE_API_KEY</code> dans les variables du
-        dépôt GitHub (ou <code className="font-mono">VITE_DRIVE_FOLDER</code> et{" "}
+        Créez la variable <code className="font-mono">GOOGLE_API_KEY</code> dans
+        les réglages du dépôt GitHub (ou{" "}
         <code className="font-mono">VITE_GOOGLE_API_KEY</code> dans{" "}
-        <code className="font-mono">.env.local</code>
-        ), puis republiez l&apos;application. La marche à suivre est dans le
-        README.
+        <code className="font-mono">.env.local</code>), puis republiez
+        l&apos;application. La marche à suivre est dans le README.
       </p>
     </Notice>
   );

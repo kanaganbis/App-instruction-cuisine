@@ -1,7 +1,8 @@
 name: Publication
 
-# Publishes the app on GitHub Pages once the repository variables
-# DRIVE_FOLDER and GOOGLE_API_KEY exist (see README, « Mise en route »).
+# Publishes the app on GitHub Pages once the repository variable
+# GOOGLE_API_KEY exists (see README, « Mise en route »). The Drive folder comes
+# from .env.production, unless a DRIVE_FOLDER variable overrides it.
 on:
   push:
     branches: [main]
@@ -18,7 +19,7 @@ concurrency:
 
 jobs:
   build:
-    if: vars.DRIVE_FOLDER != '' && vars.GOOGLE_API_KEY != ''
+    if: vars.GOOGLE_API_KEY != ''
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,10 +28,13 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run build
+      - name: Build
         env:
-          VITE_DRIVE_FOLDER: ${{ vars.DRIVE_FOLDER }}
           VITE_GOOGLE_API_KEY: ${{ vars.GOOGLE_API_KEY }}
+          DRIVE_FOLDER: ${{ vars.DRIVE_FOLDER }}
+        run: |
+          if [ -n "$DRIVE_FOLDER" ]; then export VITE_DRIVE_FOLDER="$DRIVE_FOLDER"; fi
+          npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

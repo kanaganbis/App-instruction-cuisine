@@ -34,7 +34,8 @@ instructions, ingrédients et quantités réunis sur un seul fil, avec minuteurs
 1. Dans Google Drive, créez un dossier, par exemple **Recettes**.
 2. Clic droit › **Partager** › Accès général : **Tous les utilisateurs disposant du lien**,
    rôle **Lecteur**.
-3. **Copier le lien** : c'est la valeur de `DRIVE_FOLDER`.
+3. **Copier le lien** et le mettre dans le fichier `.env.production` du dépôt
+   (`VITE_DRIVE_FOLDER=…`). C'est déjà fait pour le dossier actuel.
 
 Toute personne qui obtient ce lien (ou l'adresse de l'application) peut lire les
 recettes : n'y mettez rien de confidentiel.
@@ -60,15 +61,17 @@ l'installent et gardent l'écran allumé. Deux solutions gratuites :
 GitHub Pro). Le code ne contient aucun secret et vos recettes restent dans Drive.
 
 1. Dépôt GitHub › **Settings › General** › tout en bas, « Change visibility » › **Public**.
-2. **Settings › Pages** › Source : **GitHub Actions**.
-3. **Settings › Secrets and variables › Actions › onglet Variables** › créez
-   `DRIVE_FOLDER` (le lien du dossier) et `GOOGLE_API_KEY` (la clé).
-4. Fusionnez la pull request dans `main` (ou lancez **Actions › Publication › Run
+2. **Settings › General › Default branch** : choisissez **main** (GitHub Pages ne publie
+   que depuis la branche par défaut).
+3. **Settings › Pages** › Source : **GitHub Actions**.
+4. **Settings › Secrets and variables › Actions › onglet Variables › New repository
+   variable** : nom `GOOGLE_API_KEY`, valeur : la clé.
+5. Fusionnez la pull request dans `main` (ou lancez **Actions › Publication › Run
    workflow**). L'adresse s'affiche à la fin : `https://kanaganbis.github.io/App-instruction-cuisine/`.
 
 **B. Netlify ou Cloudflare Pages (dépôt privé)** — créez un site relié au dépôt GitHub
-avec : commande de build `npm run build`, dossier publié `dist`, variables
-d'environnement `VITE_DRIVE_FOLDER` et `VITE_GOOGLE_API_KEY`.
+avec : commande de build `npm run build`, dossier publié `dist`, variable
+d'environnement `VITE_GOOGLE_API_KEY`.
 
 Pensez à ajouter l'adresse obtenue dans les restrictions de la clé (étape 2.4).
 
